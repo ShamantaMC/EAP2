@@ -5,10 +5,10 @@ DICCIONARIO DE DATOS
 
 Base de datos: variable_interes_M.xlsxl
 
-ID_Estudiante: código identificador de los estudiantes de 4to de primaria evaluados.
+ID_Estudiante: código identificador de los estudiantes de 4to de primaria evaluados en la prueba de matemática.
 
 
-Departamento: Departamento al que pertenecen los estudiantes de 4to de primaria evaluados.
+Departamento: Departamento al que pertenecen los estudiantes de 4to de primaria evaluados en la prueba de matemática.
 
 
 Nivel_Desempeño_M22: nivel de logro asignado al alumno de 4to de primaria, en base al puntaje obtenido de
@@ -18,7 +18,7 @@ forma individual en la evaluación de matemáticas.
     
     Previo al Inicio, Inicio y En proceso = 0
 
-Sexo: género de los alumnos evaluados en la prueba de Matemáticas.
+Sexo: género de los alumnos de 4to año de primaria evaluados en la prueba de Matemáticas.
 
     Hombre = 1
 
