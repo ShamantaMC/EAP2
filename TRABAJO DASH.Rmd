@@ -1,0 +1,325 @@
+---
+title: "ANÁLISIS DE NIVEL DE DESEMPEÑO EN MATEMÁTICAS DE LOS ALUMNOS DEL 4TO GRADO DE PRIMARIA 2022"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+
+```{r}
+
+setwd("C:/Users/HP/Desktop/TRABAJO DE ESTADISTICA")
+```
+
+
+```{r}
+library(readxl)
+variables_M <- read_excel("variables_interes_M.xlsx")
+
+```
+
+```{r}
+library(caret)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(GGally)
+library(pROC)
+library(factoextra)
+library(car)
+
+```
+
+
+1. VARIABLE CENTRAL
+===================================== 
+
+Column {data-width=500} {.tabset}
+-----------------------------------------------------------------------
+
+### GRÁFICO DE BARRAS DE NIVEL DE DESEMPEÑO EN MATEMÁTICAS
+
+
+```{r}
+
+# Gráfico de barras para el Nivel de Desempeño
+
+ggplot(variables_M, aes(x = as.factor(Nivel_Desempeño_M22))) +
+  geom_bar(fill = "pink") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
+  labs(title = "Distribución del Nivel de Desempeño en Matemáticas", x = "Nivel de Desempeño", y = "Frecuencia") +
+  scale_x_discrete(labels = c("0" = "Previo al inicio, Inicio y En proceso", "1" = "Satisfactorio"))
+
+
+```
+
+
+
+2. CORRELACIÓN: variables independientes con variable dependiente
+===================================== 
+
+Column {data-width=500} {.tabset}
+-----------------------------------------------------------------------
+
+### Variable Sexo
+
+```{r}
+ggplot(variables_M, aes(x = as.factor(Nivel_Desempeño_M22), fill = as.factor(Sexo))) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, position = position_dodge(width = 1)) +
+  labs(title = "Relación entre Sexo y Nivel_Desempeño_M22", 
+       x = "Nivel de Desempeño", y = "Frecuencia", fill = "Sexo") +
+  scale_x_discrete(labels = c("0" = "Previo al Inicio, Inicio y En proceso", "1" = "Satisfacción")) +
+  scale_fill_discrete(labels = c("0" = "Mujer", "1" = "Hombre"))
+
+```
+
+### Variable Área
+
+```{r}
+
+ggplot(variables_M, aes(x = as.factor(Nivel_Desempeño_M22), fill = as.factor(Área))) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, position = position_dodge(width = 1)) +
+  labs(title = "Distribución del Nivel de Desempeño en Matemáticas por Área", 
+       x = "Nivel de Desempeño", y = "Frecuencia", fill = "Área") +
+  scale_x_discrete(labels = c("0" = "Previo al Inicio, Inicio y En proceso", "1" = "Satisfacción")) +
+  scale_fill_discrete(labels = c("0" = "Rural", "1" = "Urbana")) 
+```
+
+### Variable Cáracterística_IE
+
+```{r}
+ggplot(variables_M, aes(x = as.factor(Nivel_Desempeño_M22), fill = as.factor(Característica_IE))) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, position = position_dodge(width = 1)) +
+  labs(title = "Distribución del Nivel de Desempeño en Matemáticas por
+       estructura organizativa del colegio", 
+       x = "Nivel de Desempeño", y = "Frecuencia", fill = "Estructura Organizativa") +
+  scale_x_discrete(labels = c("0" = "Previo al Inicio, Inicio y En proceso", "1" = "Satisfacción")) +
+  scale_fill_discrete(labels = c("0" = "Unidocente/Multigrado" , "1" = "Polidocente Completo" ))
+
+
+```
+
+### Variable Gestión_IE
+
+```{r}
+ggplot(variables_M, aes(x = as.factor(Nivel_Desempeño_M22), fill = as.factor(Gestión_IE))) +
+  geom_bar(position = "dodge") +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, position = position_dodge(width = 1)) +
+  labs(title = "Distribución del Nivel de Desempeño en Matemáticas por
+       naturaleza administrativa", 
+       x = "Nivel de Desempeño", y = "Frecuencia", fill = "Gestión") +
+  scale_x_discrete(labels = c("0" = "Previo al Inicio, Inicio y En proceso", "1" = "Satisfacción")) +
+  scale_fill_discrete(labels = c("0" = "Estatal" , "1" = "No estatal"))
+
+```
+
+
+Column {data-width=500} {.tabset}
+-----------------------------------------------------------------------
+
+### Variable Sexo
+
+```{r}
+library(vcd)
+
+# Ejemplo de coeficiente de contingencia para Sexo y Nivel_Desempeño_M22
+tabla_contingencia <- table(variables_M$Sexo, variables_M$Nivel_Desempeño_M22)
+
+# Calcular el coeficiente de contingencia
+resultado_contingencia_sexo <- assocstats(tabla_contingencia)
+```
+
+
+```{r}
+# Ejemplo de prueba de Chi-cuadrado para Sexo y Nivel_Desempeño_M22
+tabla_contingencia_sexo <- table(variables_M$Sexo, variables_M$Nivel_Desempeño_M22)
+resultado_chi2_sexo <- chisq.test(tabla_contingencia_sexo)
+resultado_chi2_sexo
+
+```
+
+### Variable Área
+
+```{r}
+# Crear una tabla de contingencia entre Área y Nivel_Desempeño_M22
+tabla_contingencia_area <- table(variables_M$Área, variables_M$Nivel_Desempeño_M22)
+
+# Realizar la prueba de Chi-cuadrado entre Área y Nivel_Desempeño_M22
+resultado_chi2_area <- chisq.test(tabla_contingencia_area)
+resultado_chi2_area
+
+```
+### Variable Característica
+
+```{r}
+# Crear una tabla de contingencia entre Característica_IE y Nivel_Desempeño_M22
+tabla_contingencia_caracteristica <- table(variables_M$Característica_IE, variables_M$Nivel_Desempeño_M22)
+
+# Realizar la prueba de Chi-cuadrado entre Característica_IE y Nivel_Desempeño_M22
+resultado_chi2_caracteristica <- chisq.test(tabla_contingencia_caracteristica)
+resultado_chi2_caracteristica
+
+```
+### Variable Gestión
+
+
+```{r}
+# Crear una tabla de contingencia entre Gestión_IE y Nivel_Desempeño_M22
+tabla_contingencia_gestion <- table(variables_M$Gestión_IE, variables_M$Nivel_Desempeño_M22)
+
+# Realizar la prueba de Chi-cuadrado entre Gestión_IE y Nivel_Desempeño_M22
+resultado_chi2_gestion <- chisq.test(tabla_contingencia_gestion)
+resultado_chi2_gestion
+
+```
+
+
+3. REGRESIÓN
+===================================== 
+Column {data-width=500} {.tabset}
+-----------------------------------------------------------------------
+
+### Regresión Logistica
+
+```{r}
+modelologistico <- glm(Nivel_Desempeño_M22 ~  Sexo  + Gestión_IE + Característica_IE + Área , data = variables_M, family = binomial)
+summary(modelologistico)
+
+```
+
+
+
+```{r}
+# Instalar y cargar el paquete 'kableExtra' si no está instalado
+# install.packages("kableExtra")
+library(kableExtra)
+library(tibble)
+
+# Fijar la semilla para la reproducibilidad
+set.seed(2019)
+
+# Definir la hipótesis y la fórmula del modelo logístico
+h1 <- formula(Nivel_Desempeño_M22 ~ Sexo + Gestión_IE + Característica_IE + Área)
+
+# Ajustar el modelo de regresión logística usando la base de datos variables_M
+modeloLOG <- glm(h1, data = variables_M, family = binomial)
+
+# Obtener un resumen del modelo
+summary_modeloLOG <- summary(modeloLOG)
+
+# Extraer los coeficientes y otros datos importantes
+coeficientes <- summary_modeloLOG$coefficients
+colnames(coeficientes) <- c("Estimación", "Error Estándar", "Valor Z", "Valor P")
+
+# Crear una tabla con los coeficientes
+coeficientes %>%
+  as.data.frame() %>%
+  rownames_to_column("Predictor") %>%
+  kbl(caption = "Regresión Logística",
+      digits = 4, format = "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_header_above(c(" " = 1, "Regresión Logística" = 4))
+
+```
+
+
+4. CLUSTERIZACIÓN
+===================================== 
+Column {data-width=500} {.tabset}
+-----------------------------------------------------------------------
+
+```{r}
+library(BBmisc)
+```
+
+
+### BOXPLOT ESTANDARIZADO
+
+```{r}
+boxplot(normalize(variables_M[,c(4:7)],method='standardize'))
+```
+```{r}
+set.seed(123) # Para reproducibilidad
+sample_size <- 1000  # Ajusta según la capacidad de tu sistema
+sampled_indices <- sample(1:nrow(variables_M), sample_size)
+
+# Crear una muestra de los datos incluyendo Nivel_Desempeño_M22
+sampled_data <- variables_M[sampled_indices, c(4:7)]
+```
+
+### AGNES 
+
+```{r}
+library(cluster)
+
+# Calcular la distancia de Gower en la muestra
+g.dist <- daisy(sampled_data, metric = "gower", type = list(symm = 1:4))
+
+```
+
+
+###  Clusterización jerárquica con AGNES
+
+```{r}
+library(factoextra)
+
+# Clusterización jerárquica con AGNES
+res.agnes <- hcut(g.dist, k = 5, hc_func = 'agnes', hc_method = "ward.D")
+sampled_data$agnes <- res.agnes$cluster
+head(sampled_data,15)%>%kbl()%>%kable_styling()
+
+```
+
+### DENOGRAMA AGNES
+
+```{r}
+# Visualize
+fviz_dend(res.agnes, cex = 0.7, horiz = T,main = "")
+```
+### SILHOUTTE AGNES
+
+```{r}
+fviz_silhouette(res.agnes,print.summary = F)
+```
+
+
+### DIANA
+
+```{r}
+set.seed(123)
+res.diana <- hcut(g.dist, k = 3,hc_func='diana')
+sampled_data$diana=res.diana$cluster
+# veamos
+head(sampled_data,15)%>%kbl%>%kable_styling()
+```
+
+### DENOGRAMA DIANA
+
+```{r}
+# Visualize
+fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
+```
+
+
+### SILHOUTTE DIANA
+
+```{r}
+fviz_silhouette(res.diana,print.summary = F)
+```
+
+
+
+
+
